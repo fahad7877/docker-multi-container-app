@@ -1,56 +1,645 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Docker User Registration</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Nexus | User Portal</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+    --primary: #8b5cf6;
+    --secondary: #06b6d4;
+    --text: #f8fafc;
+    --muted: #94a3b8;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    background: #080d1b;
+    color: var(--text);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+    overflow-x: hidden;
+}
+
+/* Animated background */
+
+.background {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    z-index: -1;
+    background:
+        radial-gradient(circle at 50% 50%, #17203d, #080d1b 75%);
+}
+
+.orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(2px);
+    opacity: 0.65;
+    animation: float 12s ease-in-out infinite alternate;
+}
+
+.orb.one {
+    width: 350px;
+    height: 350px;
+    background: #6d28d9;
+    top: -100px;
+    left: -100px;
+}
+
+.orb.two {
+    width: 300px;
+    height: 300px;
+    background: #0891b2;
+    bottom: -100px;
+    right: -70px;
+    animation-delay: -4s;
+}
+
+.orb.three {
+    width: 150px;
+    height: 150px;
+    background: #db2777;
+    top: 50%;
+    left: 75%;
+    animation-delay: -7s;
+}
+
+@keyframes float {
+    from {
+        transform: translate(0, 0) scale(1);
+    }
+    to {
+        transform: translate(70px, -60px) scale(1.2);
+    }
+}
+
+/* Main container */
+
+.container {
+    width: 100%;
+    max-width: 570px;
+    position: relative;
+    padding: 42px;
+    border-radius: 24px;
+
+    background: rgba(15, 23, 42, 0.76);
+    backdrop-filter: blur(22px);
+
+    border: 1px solid rgba(255,255,255,0.12);
+
+    box-shadow:
+        0 25px 80px rgba(0,0,0,0.5),
+        0 0 40px rgba(139,92,246,0.08);
+
+    animation: appear 0.9s ease forwards;
+}
+
+@keyframes appear {
+    from {
+        opacity: 0;
+        transform: translateY(40px) scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Header */
+
+.logo {
+    width: 58px;
+    height: 58px;
+    margin: 0 auto 20px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 18px;
+    font-size: 25px;
+    font-weight: 800;
+
+    background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+    box-shadow: 0 0 30px rgba(139,92,246,0.4);
+
+    animation: logoPulse 3s infinite;
+}
+
+@keyframes logoPulse {
+    0%, 100% {
+        box-shadow: 0 0 20px rgba(139,92,246,0.3);
+    }
+    50% {
+        box-shadow: 0 0 40px rgba(6,182,212,0.6);
+    }
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.header h1 {
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -1px;
+}
+
+.header h1 span {
+    background: linear-gradient(90deg, #a78bfa, #22d3ee);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.header p {
+    color: var(--muted);
+    font-size: 14px;
+    margin-top: 12px;
+    line-height: 1.6;
+}
+
+/* Form */
+
+.form-group {
+    margin-bottom: 22px;
+}
+
+label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #cbd5e1;
+    margin-bottom: 10px;
+}
+
+.input-wrapper {
+    position: relative;
+}
+
+.input-wrapper span {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #818cf8;
+    font-size: 18px;
+}
+
+input {
+    width: 100%;
+    padding: 16px 16px 16px 46px;
+
+    background: rgba(255,255,255,0.045);
+    border: 1px solid rgba(255,255,255,0.12);
+
+    border-radius: 12px;
+    outline: none;
+
+    color: white;
+    font-size: 14px;
+
+    transition: 0.3s;
+}
+
+input::placeholder {
+    color: #64748b;
+}
+
+input:focus {
+    border-color: #8b5cf6;
+    background: rgba(139,92,246,0.08);
+
+    box-shadow: 0 0 0 4px rgba(139,92,246,0.13);
+}
+
+/* Buttons */
+
+button {
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.primary-btn {
+    width: 100%;
+    padding: 16px;
+    margin-top: 5px;
+
+    color: white;
+    font-size: 15px;
+    font-weight: 700;
+
+    border-radius: 12px;
+
+    background: linear-gradient(100deg, #7c3aed, #4f46e5, #0891b2);
+    background-size: 200% 200%;
+
+    box-shadow: 0 8px 25px rgba(99,102,241,0.25);
+
+    transition: 0.35s;
+    animation: gradientMove 5s ease infinite;
+
+    position: relative;
+    overflow: hidden;
+}
+
+@keyframes gradientMove {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+.primary-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(99,102,241,0.45);
+}
+
+.primary-btn:active {
+    transform: scale(0.98);
+}
+
+.primary-btn:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+/* User section */
+
+.users-section {
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.section-heading h2 {
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.badge {
+    color: #a78bfa;
+    font-size: 11px;
+    font-weight: 700;
+    background: rgba(139,92,246,0.15);
+    padding: 7px 12px;
+    border-radius: 20px;
+}
+
+.secondary-btn {
+    width: 100%;
+    padding: 13px;
+    border-radius: 10px;
+
+    color: #c4b5fd;
+    font-size: 13px;
+    font-weight: 600;
+
+    background: rgba(139,92,246,0.1);
+    border: 1px solid rgba(139,92,246,0.3);
+
+    transition: 0.3s;
+}
+
+.secondary-btn:hover {
+    background: rgba(139,92,246,0.25);
+    border-color: #8b5cf6;
+}
+
+/* User cards */
+
+#result {
+    margin-top: 18px;
+}
+
+.user-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    padding: 16px;
+    margin-bottom: 12px;
+
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 13px;
+
+    background: rgba(255,255,255,0.045);
+
+    animation: slideIn 0.5s ease both;
+    transition: 0.3s;
+}
+
+.user-card:hover {
+    transform: translateX(5px);
+    border-color: rgba(139,92,246,0.5);
+    background: rgba(139,92,246,0.08);
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.avatar {
+    width: 43px;
+    height: 43px;
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: 16px;
+
+    color: white;
+    background: linear-gradient(135deg, #8b5cf6, #0891b2);
+}
+
+.user-info strong {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: #f1f5f9;
+}
+
+.user-info span {
+    font-size: 12px;
+    color: #94a3b8;
+    overflow-wrap: anywhere;
+}
+
+#message {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 13px;
+}
+
+.footer {
+    text-align: center;
+    color: #64748b;
+    font-size: 11px;
+    margin-top: 32px;
+}
+
+.footer span {
+    color: #a78bfa;
+}
+
+/* Mobile */
+
+@media(max-width: 500px) {
+    .container {
+        padding: 28px 22px;
+    }
+
+    .header h1 {
+        font-size: 26px;
+    }
+}
+
+@media(prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+</style>
 </head>
+
 <body>
 
-    <h1>User Registration</h1>
+<div class="background">
+    <div class="orb one"></div>
+    <div class="orb two"></div>
+    <div class="orb three"></div>
+</div>
+
+<div class="container">
+
+    <div class="header">
+
+        <div class="logo">N</div>
+
+        <h1>Welcome to <span>Nexus</span></h1>
+
+        <p>
+            Create your account and become part of<br>
+            something amazing.
+        </p>
+
+    </div>
 
     <form id="registerForm">
-        <input type="text" id="name" placeholder="Enter Name" required>
-        <br><br>
 
-        <input type="email" id="email" placeholder="Enter Email" required>
-        <br><br>
+        <div class="form-group">
 
-        <button type="submit">Register</button>
+            <label for="name">FULL NAME</label>
+
+            <div class="input-wrapper">
+                <span>✦</span>
+                <input
+                    type="text"
+                    id="name"
+                    placeholder="Enter your full name"
+                    required
+                >
+            </div>
+
+        </div>
+
+        <div class="form-group">
+
+            <label for="email">EMAIL ADDRESS</label>
+
+            <div class="input-wrapper">
+                <span>✉</span>
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="Enter your email address"
+                    required
+                >
+            </div>
+
+        </div>
+
+        <button type="submit" class="primary-btn" id="registerBtn">
+            Create Account →
+        </button>
+
     </form>
 
-    <h2>Registered Users</h2>
+    <p id="message" aria-live="polite"></p>
 
-    <button onclick="getUsers()">View Users</button>
+    <div class="users-section">
 
-    <div id="result"></div>
+        <div class="section-heading">
+            <h2>Community Members</h2>
+            <span class="badge">● LIVE USERS</span>
+        </div>
 
-    <script>
-        document.getElementById("registerForm").addEventListener("submit", async function(e) {
-            e.preventDefault();
+        <button class="secondary-btn" onclick="getUsers()">
+            ↻ &nbsp; Refresh Members
+        </button>
 
-            const response = await fetch("/api/users", {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({
-                    name: document.getElementById("name").value,
-                    email: document.getElementById("email").value
-                })
-            });
+        <div id="result" aria-live="polite"></div>
 
-            const data = await response.json();
-            alert(data.message);
+    </div>
 
-            this.reset();
-            getUsers();
+    <div class="footer">
+        POWERED BY <span>DOCKER</span> · <span>FLASK</span> · <span>POSTGRESQL</span>
+    </div>
+
+</div>
+
+<script>
+
+const form = document.getElementById("registerForm");
+const message = document.getElementById("message");
+
+form.addEventListener("submit", async function(event) {
+
+    event.preventDefault();
+
+    const button = document.getElementById("registerBtn");
+
+    button.disabled = true;
+    button.textContent = "Creating Account...";
+
+    message.textContent = "";
+
+    try {
+
+        const response = await fetch("/api/users", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                name: document.getElementById("name").value.trim(),
+                email: document.getElementById("email").value.trim()
+            })
         });
 
-        async function getUsers() {
-            const response = await fetch("/api/users");
-            const users = await response.json();
+        const data = await response.json();
 
-            document.getElementById("result").innerHTML =
-                users.map(user => `<p>${user.name} - ${user.email}</p>`).join("");
+        if (!response.ok) {
+            throw new Error(data.error || "Registration failed");
         }
-    </script>
+
+        message.style.color = "#4ade80";
+        message.textContent = "✓ Account created successfully!";
+
+        form.reset();
+
+        await getUsers();
+
+    } catch(error) {
+
+        message.style.color = "#fb7185";
+        message.textContent = error.message;
+
+    } finally {
+
+        button.disabled = false;
+        button.textContent = "Create Account →";
+
+    }
+
+});
+
+
+async function getUsers() {
+
+    const result = document.getElementById("result");
+
+    result.textContent = "Loading members...";
+
+    try {
+
+        const response = await fetch("/api/users");
+
+        if (!response.ok) {
+            throw new Error("Unable to load members");
+        }
+
+        const users = await response.json();
+
+        result.replaceChildren();
+
+        if (users.length === 0) {
+            result.textContent = "No members registered yet.";
+            return;
+        }
+
+        users.forEach((user, index) => {
+
+            const card = document.createElement("div");
+            card.className = "user-card";
+            card.style.animationDelay = `${index * 0.1}s`;
+
+            const avatar = document.createElement("div");
+            avatar.className = "avatar";
+            avatar.textContent = user.name.charAt(0).toUpperCase();
+
+            const info = document.createElement("div");
+            info.className = "user-info";
+
+            const name = document.createElement("strong");
+            name.textContent = user.name;
+
+            const email = document.createElement("span");
+            email.textContent = user.email;
+
+            info.append(name, email);
+            card.append(avatar, info);
+
+            result.appendChild(card);
+
+        });
+
+    } catch(error) {
+
+        result.textContent = error.message;
+
+    }
+
+}
+
+getUsers();
+
+</script>
 
 </body>
 </html>
